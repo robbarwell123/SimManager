@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="32px" y="32px" viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve">
+	<g>
+		<path d="M 2 8 L 30 8" stroke="white" stroke-width="4" stroke-linecap="round"/>
+		<path d="M 2 16 L 30 16" stroke="white" stroke-width="4" stroke-linecap="round"/>
+		<path d="M 2 24 L 30 24" stroke="white" stroke-width="4" stroke-linecap="round"/>
+	</g>
+</svg>

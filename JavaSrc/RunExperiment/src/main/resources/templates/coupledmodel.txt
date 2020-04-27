@@ -1,0 +1,106 @@
+// === Cadmium Headers ===
+#include <cadmium/modeling/ports.hpp>
+#include <cadmium/modeling/dynamic_model.hpp>
+#include <cadmium/modeling/dynamic_model_translator.hpp>
+#include <cadmium/engine/pdevs_dynamic_runner.hpp>
+#include <cadmium/logger/common_loggers.hpp>
+#include <cadmium/basic_model/pdevs/iestream.hpp> //Atomic model for inputs
+
+// === Standard C++ Libraries===
+#include <iostream>
+#include <string>
+
+// === Time Library ===
+#include "[(${myModel.getMyTopModel().getTimeType()})].hpp"
+
+// === Additional Headers ===
+[# th:each="myHeader : ${myModel.getMyTopModel().getHeaders()}"]#include [(${myHeader})]
+[/]
+
+// === Atomic Model Headers ===
+[# th:each="myAtomicType : ${myModel.getMyAtomicModelTypes()}"][# th:if="${!myAtomicType.value.getXmlImplementation().equalsIgnoreCase('iestream')}"]
+#include "../../../atomics/[(${myAtomicType.key})].hpp"
+[/][/]
+
+using namespace std;
+using namespace cadmium;
+using namespace cadmium::basic_models::pdevs;
+
+using TIME = [(${myModel.getMyTopModel().getTimeType()})];
+
+// === Port Configs ===
+[# th:each="myPort : ${myModel.getMyPorts()}"]struct [(${myPort.value.getName()})] : public [(${myPort.value.getType()})]_port<[(${myPort.value.getMessageType()})]>{};
+[/]
+
+// === Input Readers ===
+[# th:each="myInputReader : ${myModel.getMyInputReaders()}"]
+template<typename T>
+class [(${myInputReader.getKey()})] : public iestream_input<[(${myInputReader.getValue()})],T> {
+    public:
+        [(${myInputReader.getKey()})] () = default;
+        [(${myInputReader.getKey()})] (const char* file_path) : iestream_input<[(${myInputReader.getValue()})],T>(file_path) {}
+};
+[/]
+
+int main(int argc, char *argv[])
+{
+	// === Atomic Models ===
+	[# th:each="myAtomic : ${myModel.getMyAtomicModels()}"]
+	[# th:if="${!myAtomic.getXmlImplementation().equalsIgnoreCase('iestream')}"]shared_ptr<dynamic::modeling::model> [(${myAtomic.getName()})]=dynamic::translate::make_dynamic_atomic_model<[(${myAtomic.getClassName()})], TIME[(${myAtomic.getParamTypes()})]>("[(${myAtomic.getName()})]"[(${myAtomic.getParamList()})]);[/]
+	[# th:if="${myAtomic.getXmlImplementation().equalsIgnoreCase('iestream')}"]string my[(${myAtomic.getName()})]InFile = "[(${myAtomic.getModelParams().get(0).getValue()})]";
+    const char * s[(${myAtomic.getName()})]InFile = my[(${myAtomic.getName()})]InFile.c_str();
+    shared_ptr<dynamic::modeling::model> [(${myAtomic.getName()})] = dynamic::translate::make_dynamic_atomic_model<[(${myAtomic.getClassName()})] , TIME, const char* >("[(${myAtomic.getName()})]" , move(s[(${myAtomic.getName()})]InFile));[/]
+    [/]
+
+
+	[# th:each="myCoupledModel : ${myModel.getMyCoupledModels()}"]
+	// === [(${myCoupledModel.getName()})] Coupled Models ===
+    dynamic::modeling::Ports iports_[(${myCoupledModel.getName()})] = {[(${myCoupledModel.getMyFlatModel().getInPorts()})]};
+    dynamic::modeling::Ports oports_[(${myCoupledModel.getName()})] = {[(${myCoupledModel.getMyFlatModel().getOutPorts()})]};
+    
+	dynamic::modeling::Models submodels_[(${myCoupledModel.getName()})] = {[(${myCoupledModel.getMyFlatModel().getSubModels()})]};
+	
+	dynamic::modeling::EICs eics_[(${myCoupledModel.getName()})] = {[# th:each="myConnection, iterStat : ${myCoupledModel.getMyFlatModel().getEIC()}"]
+		dynamic::translate::make_EIC<[(${myConnection.getFromType()})], [(${myConnection.getToType()})]>("[(${myConnection.getToName()})]")[(${!iterStat.last ? ',' : ''})]
+	[/]};
+
+	dynamic::modeling::EOCs eocs_[(${myCoupledModel.getName()})] = {[# th:each="myConnection, iterStat : ${myCoupledModel.getMyFlatModel().getEOC()}"]
+		dynamic::translate::make_EOC<[(${myConnection.getFromType()})], [(${myConnection.getToType()})]>("[(${myConnection.getFromName()})]")[(${!iterStat.last ? ',' : ''})]
+	[/]};
+
+	dynamic::modeling::ICs ics_[(${myCoupledModel.getName()})] = {[# th:each="myConnection, iterStat : ${myCoupledModel.getMyFlatModel().getIC()}"]
+		dynamic::translate::make_IC<[(${myConnection.getFromType()})], [(${myConnection.getToType()})]>("[(${myConnection.getFromName()})]","[(${myConnection.getToName()})]")[(${!iterStat.last ? ',' : ''})]
+	[/]};
+
+    shared_ptr<dynamic::modeling::coupled<TIME>> [(${myCoupledModel.getName()})];
+    [(${myCoupledModel.getName()})] = make_shared<dynamic::modeling::coupled<TIME>>(
+        "[(${myCoupledModel.getName()})]", submodels_[(${myCoupledModel.getName()})], iports_[(${myCoupledModel.getName()})], oports_[(${myCoupledModel.getName()})], eics_[(${myCoupledModel.getName()})], eocs_[(${myCoupledModel.getName()})], ics_[(${myCoupledModel.getName()})]
+    );
+	
+	[/]
+		
+	// === Loggers ===
+[# th:each="myLogFile : ${myModel.getMyTopModel().getLoggerFiles()}"]
+	static ofstream out_[(${myLogFile})]("[(${myLogFile})].txt");
+	struct oss_[(${myLogFile})]{
+		static ostream& sink(){
+			return out_[(${myLogFile})];
+		}
+	};
+[/]
+[# th:each="myLog : ${myModel.getMyTopModel().getLoggers()}"]
+    using [(${myLog.getName()})]=logger::logger<[(${myLog.getType()})], dynamic::logger::formatter<TIME>, oss_[(${myLog.getLoggerFile()})]>;
+[/]
+    using logger_top=logger::multilogger<[(${myModel.getMyLoggers()})]>;
+
+	// === Runner Call ===
+    dynamic::engine::runner<TIME, logger_top> r(TOP, {0});
+    [# th:if="${myModel.getMyTopModel().getRunUntil() != '-1'}"]
+    r.run_until(TIME([(${myModel.getMyTopModel().getRunUntil()})]));
+    [/]
+    [# th:if="${myModel.getMyTopModel().getRunUntil() == '-1'}"]
+    r.run_until_passivate();
+    [/]
+
+    return 0;
+}

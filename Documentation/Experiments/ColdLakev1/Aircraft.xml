@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coupledModel name="Aircraft">
+	<ports>
+		<port type="in" name="AC_inLoads" message_type="oLoad"></port>
+		<port type="out" name="AC_outLoads" message_type="oLoad"></port>
+ 		<port type="out" name="AC_outStatus" message_type="oAircraftStatus"></port>
+	</ports>
+	<components>
+		<submodel type="atomic" name="Aircraft1" class_name="Aircraft" xml_implementation="Aircraft.devs">
+			<param type="int" name="iAircraftID" value="1" />
+			<param type="int" name="iType" value="1" />
+			<param type="int" name="iHomeLocation" value="1" />
+			<param type="int" name="iAvgSpeed" value="490" />
+			<param type="int" name="iMaxLoad" value="16" />			
+		</submodel>
+		<submodel type="atomic" name="Aircraft2" class_name="Aircraft" xml_implementation="Aircraft.devs">
+			<param type="int" name="iAircraftID" value="2" />
+			<param type="int" name="iType" value="2" />
+			<param type="int" name="iHomeLocation" value="6" />
+			<param type="int" name="iAvgSpeed" value="300" />
+			<param type="int" name="iMaxLoad" value="4" />			
+		</submodel>
+		<submodel type="atomic" name="Aircraft3" class_name="Aircraft" xml_implementation="Aircraft.devs">
+			<param type="int" name="iAircraftID" value="3" />
+			<param type="int" name="iType" value="2" />
+			<param type="int" name="iHomeLocation" value="6" />
+			<param type="int" name="iAvgSpeed" value="300" />
+			<param type="int" name="iMaxLoad" value="4" />			
+		</submodel>
+		<submodel type="atomic" name="Aircraft4" class_name="Aircraft" xml_implementation="Aircraft.devs">
+			<param type="int" name="iAircraftID" value="4" />
+			<param type="int" name="iType" value="2" />
+			<param type="int" name="iHomeLocation" value="6" />
+			<param type="int" name="iAvgSpeed" value="300" />
+			<param type="int" name="iMaxLoad" value="4" />			
+		</submodel>
+	</components>
+	<connections>
+		<eic in_port_coupled="AC_inLoads" submodel="Aircraft1" in_port_submodel="Aircraft_defs::inLoads" />
+		<eic in_port_coupled="AC_inLoads" submodel="Aircraft2" in_port_submodel="Aircraft_defs::inLoads" />
+		<eic in_port_coupled="AC_inLoads" submodel="Aircraft3" in_port_submodel="Aircraft_defs::inLoads" />
+		<eic in_port_coupled="AC_inLoads" submodel="Aircraft4" in_port_submodel="Aircraft_defs::inLoads" />
+		<eoc submodel="Aircraft1" out_port_submodel="Aircraft_defs::outLoads" out_port_coupled="AC_outLoads" />		
+		<eoc submodel="Aircraft1" out_port_submodel="Aircraft_defs::outACStatus" out_port_coupled="AC_outStatus" />		
+		<eoc submodel="Aircraft2" out_port_submodel="Aircraft_defs::outLoads" out_port_coupled="AC_outLoads" />		
+		<eoc submodel="Aircraft2" out_port_submodel="Aircraft_defs::outACStatus" out_port_coupled="AC_outStatus" />		
+		<eoc submodel="Aircraft3" out_port_submodel="Aircraft_defs::outLoads" out_port_coupled="AC_outLoads" />		
+		<eoc submodel="Aircraft3" out_port_submodel="Aircraft_defs::outACStatus" out_port_coupled="AC_outStatus" />		
+		<eoc submodel="Aircraft4" out_port_submodel="Aircraft_defs::outLoads" out_port_coupled="AC_outLoads" />		
+		<eoc submodel="Aircraft4" out_port_submodel="Aircraft_defs::outACStatus" out_port_coupled="AC_outStatus" />		
+	</connections>
+</coupledModel>

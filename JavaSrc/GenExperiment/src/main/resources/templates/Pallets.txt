@@ -1,0 +1,2 @@
+[# th:each="num_pallets, num_pallets_info : ${pallets}"][# th:if="${num_pallets>0}"][# th:each="curr_pallet, curr_pallet_info : ${#numbers.sequence(0, num_pallets, 1)}"]1/1 [(${#ids.seq('')})] 0 [(${num_pallets_info.index})]
+[/][/][/]

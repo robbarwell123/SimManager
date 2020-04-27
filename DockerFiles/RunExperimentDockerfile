@@ -1,0 +1,10 @@
+FROM ubuntu:latest
+MAINTAINER Rob Barwell <rob@barwell.ca>
+RUN apt-get -y update
+RUN apt-get -y install openjdk-8-jdk
+RUN apt-get -y install build-essential
+RUN apt-get -y install libboost-all-dev
+COPY ./Simulators/ /simulator
+COPY ./JavaSrc/RunExperiment/target/RunExperiment-1.0.jar /microservice/RunExperiment-1.0.jar
+RUN mkdir /microservice/config
+ENTRYPOINT ["java","-Dspring.config.location=/microservice/config/application.properties","-jar","/microservice/RunExperiment-1.0.jar"]

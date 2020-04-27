@@ -1,0 +1,89 @@
+<?xml version="1.0" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:complexType name="portType">
+		<xs:attribute name="type" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="in" />
+					<xs:enumeration value="out" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="name" type="xs:string" use="required" />
+		<xs:attribute name="message_type" type="xs:string" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="portsType">
+		<xs:sequence>
+			<xs:element name="port" type="portType" minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="paramType">
+		<xs:attribute name="type" type="xs:string" use="required" />
+		<xs:attribute name="name" type="xs:string" use="required" />
+		<xs:attribute name="value" type="xs:string" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="submodelType">
+		<xs:sequence>
+			<xs:element name="param" type="paramType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="type" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="atomic" />
+					<xs:enumeration value="coupled" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="name" type="xs:string" use="required" />
+		<xs:attribute name="class_name" type="xs:string" use="required" />
+		<xs:attribute name="xml_implementation" type="xs:string" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="componentsType">
+		<xs:sequence>
+			<xs:element name="submodel" type="submodelType" minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="eocType">
+		<xs:attribute name="submodel" type="xs:string" use="required" />
+		<xs:attribute name="out_port_submodel" type="xs:string" use="required" />
+		<xs:attribute name="out_port_coupled" type="xs:string" use="required" />
+	</xs:complexType>
+	
+	<xs:complexType name="eicType">
+		<xs:attribute name="in_port_coupled" type="xs:string" use="required" />
+		<xs:attribute name="submodel" type="xs:string" use="required" />
+		<xs:attribute name="in_port_submodel" type="xs:string" use="required" />
+	</xs:complexType>
+	
+	<xs:complexType name="icType">
+		<xs:attribute name="from_submodel" type="xs:string" use="required" />
+		<xs:attribute name="out_port_from" type="xs:string" use="required" />
+		<xs:attribute name="to_submodel" type="xs:string" use="required" />
+		<xs:attribute name="in_port_to" type="xs:string" use="required" />
+	</xs:complexType>
+	
+	<xs:complexType name="connectionsType">
+		<xs:sequence>
+			<xs:element name="eic" type="eicType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="eoc" type="eocType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="ic" type="icType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="coupledModelType">
+		<xs:sequence>
+			<xs:element name="ports" type="portsType" minOccurs="1" maxOccurs="1" />
+			<xs:element name="components" type="componentsType" minOccurs="1" maxOccurs="1" />
+			<xs:element name="connections" type="connectionsType" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required" />
+	</xs:complexType>
+	
+	<xs:element name="coupledModel" type="coupledModelType" />
+</xs:schema>

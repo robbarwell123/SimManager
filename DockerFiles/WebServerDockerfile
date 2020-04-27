@@ -1,0 +1,3 @@
+FROM php:apache
+MAINTAINER Rob Barwell <robbarwell@cmail.carleton.ca>
+COPY / /var/www/html/

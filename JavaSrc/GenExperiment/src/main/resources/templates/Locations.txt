@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coupledModel name="Locations">
+	<ports>
+		<port type="in" name="LOC_InputLoads" message_type="oLoad"></port>
+		<port type="in" name="LOC_InputACStatus" message_type="oAircraftStatus"></port>
+		<port type="in" name="LOC_InputPallets" message_type="oPallet"></port>
+		<port type="in" name="LOC_InputLocInfo" message_type="oLocInfo"></port>
+		<port type="out" name="LOC_outLoads" message_type="oLoad"></port>
+ 		<port type="out" name="LOC_outPallets" message_type="oPallet"></port>
+	</ports>
+	<components>
+[# th:each="curr_loc, stats : ${locations}"]		<submodel type="atomic" name="[(${curr_loc.getId().replaceAll("[^a-zA-Z0-9]", "")})]" class_name="Location" xml_implementation="Location.devs">
+			<param type="int" name="iLocID" value="[(${stats.index})]" />
+			<param type="string" name="sLocName" value="&quot;[(${curr_loc.getName()})]&quot;" />
+			<param type="double" name="lat" value="[(${curr_loc.getLat()})]" />
+			<param type="double" name="long" value="[(${curr_loc.getLon()})]" />
+		</submodel>
+[/]
+	</components>
+	<connections>
+[# th:each="curr_loc : ${locations}"]		<eic in_port_coupled="LOC_InputLoads" submodel="[(${curr_loc.getId().replaceAll("[^a-zA-Z0-9]", "")})]" in_port_submodel="Locations_defs::inLoads" />
+		<eic in_port_coupled="LOC_InputACStatus" submodel="[(${curr_loc.getId().replaceAll("[^a-zA-Z0-9]", "")})]" in_port_submodel="Locations_defs::inACStatus" />
+		<eic in_port_coupled="LOC_InputPallets" submodel="[(${curr_loc.getId().replaceAll("[^a-zA-Z0-9]", "")})]" in_port_submodel="Locations_defs::inPallets" />
+		<eic in_port_coupled="LOC_InputLocInfo" submodel="[(${curr_loc.getId().replaceAll("[^a-zA-Z0-9]", "")})]" in_port_submodel="Locations_defs::inLocInfo" />
+[/]
+[# th:each="curr_loc : ${locations}"]		<eoc submodel="[(${curr_loc.getId().replaceAll("[^a-zA-Z0-9]", "")})]" out_port_submodel="Locations_defs::outLoads" out_port_coupled="LOC_outLoads" />		
+		<eoc submodel="[(${curr_loc.getId().replaceAll("[^a-zA-Z0-9]", "")})]" out_port_submodel="Locations_defs::outPallets" out_port_coupled="LOC_outPallets" />		
+[/]
+	</connections>
+</coupledModel>

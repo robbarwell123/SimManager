@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coupledModel name="Network">
+	<ports>
+		<port type="in" name="inp_1" message_type="Message_t"></port>
+		<port type="in" name="inp_2" message_type="Message_t"></port>
+		<port type="out" name="outp_1" message_type="Message_t"></port>
+ 		<port type="out" name="outp_2" message_type="Message_t"></port>
+	</ports>
+	<components>
+		<submodel type="atomic" name="subnet1" class_name="Subnet" xml_implementation="Subnet.devs" />
+		<submodel type="atomic" name="subnet2" class_name="Subnet" xml_implementation="Subnet.devs" />
+	</components>
+	<connections>
+		<eic in_port_coupled="inp_1" submodel="subnet1" in_port_submodel="Subnet_defs::in" />
+		<eic in_port_coupled="inp_2" submodel="subnet2" in_port_submodel="Subnet_defs::in" />
+		<eoc submodel="subnet1" out_port_submodel="Subnet_defs::out" out_port_coupled="outp_1" />
+		<eoc submodel="subnet2" out_port_submodel="Subnet_defs::out" out_port_coupled="outp_2" />
+	</connections>
+</coupledModel>

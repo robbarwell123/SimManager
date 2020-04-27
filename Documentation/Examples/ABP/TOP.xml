@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coupledModel name="TOP">
+	<ports>
+		<port type="out" name="outp_pack" message_type="int" />
+ 		<port type="out" name="outp_ack" message_type="int" />
+	</ports>
+	<components>
+		<submodel type="atomic" name="input_reader" class_name="InputReader_Int" xml_implementation="iestream">
+			<param type="const char*" name="sFilename" value="input_abp_1.txt" />
+			<param type="message_type" name="InputReader_Int" value="int" />
+		</submodel>
+		<submodel type="coupled" name="ABP" class_name="ABP" xml_implementation="ABP.xml" />
+	</components>
+	<connections>
+		<eoc submodel="ABP" out_port_submodel="outp_pack" out_port_coupled="outp_pack" />		
+		<eoc submodel="ABP" out_port_submodel="outp_ack" out_port_coupled="outp_ack" />		
+		<ic from_submodel="input_reader" out_port_from="iestream_input_defs&lt;int&gt;::out" to_submodel="ABP" in_port_to="inp_control" />    
+	</connections>
+</coupledModel>

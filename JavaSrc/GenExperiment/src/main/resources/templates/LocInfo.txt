@@ -1,0 +1,1 @@
+[# th:each="curr_path : ${paths}"][(${curr_path.toString()})][/]

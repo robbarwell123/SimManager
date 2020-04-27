@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coupledModel name="ABP">
+	<ports>
+		<port type="in" name="inp_control" message_type="int"></port>
+		<port type="out" name="outp_ack" message_type="int"></port>
+ 		<port type="out" name="outp_pack" message_type="int"></port>
+	</ports>
+	<components>
+		<submodel type="atomic" name="sender1" class_name="Sender" xml_implementation="Sender.devs" />
+		<submodel type="atomic" name="receiver1" class_name="Receiver" xml_implementation="Reciever.devs" />
+		<submodel type="coupled" name="Network" class_name="Network" xml_implementation="Network.xml" />
+	</components>
+	<connections>
+		<eic in_port_coupled="inp_control" submodel="sender1" in_port_submodel="Sender_defs::controlIn" />
+		<eoc submodel="sender1" out_port_submodel="Sender_defs::packetSentOut" out_port_coupled="outp_pack" />
+		<eoc submodel="sender1" out_port_submodel="Sender_defs::ackReceivedOut" out_port_coupled="outp_ack" />		
+		<ic from_submodel="sender1" out_port_from="Sender_defs::dataOut" to_submodel="Network" in_port_to="inp_1" />    
+		<ic from_submodel="Network" out_port_from="outp_2" to_submodel="sender1" in_port_to="Sender_defs::ackIn" />    
+		<ic from_submodel="receiver1" out_port_from="Receiver_defs::out" to_submodel="Network" in_port_to="inp_2" />    
+		<ic from_submodel="Network" out_port_from="outp_1" to_submodel="receiver1" in_port_to="Receiver_defs::in" />    
+	</connections>
+</coupledModel>

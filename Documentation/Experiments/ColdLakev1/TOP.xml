@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coupledModel name="TOP">
+	<ports>
+		<port type="out" name="outLoads" message_type="oLoad" />
+ 		<port type="out" name="outPallets" message_type="oPallet" />
+	</ports>
+	<components>
+		<submodel type="atomic" name="irPalletIn" class_name="InputReader_oPallet" xml_implementation="iestream">
+			<param type="const char*" name="sFilename" value="Pallets.txt" />
+			<param type="message_type" name="InputReader_oPallet" value="oPallet" />
+		</submodel>
+		<submodel type="atomic" name="irLocInfoIn" class_name="InputReader_oLocInfo" xml_implementation="iestream">
+			<param type="const char*" name="sFilename" value="LocInfo.txt" />
+			<param type="message_type" name="InputReader_oLocInfo" value="oLocInfo" />
+		</submodel>
+		<submodel type="coupled" name="Locations" class_name="Locations" xml_implementation="Locations.xml" />
+		<submodel type="coupled" name="Aircraft" class_name="Aircraft" xml_implementation="Aircraft.xml" />
+	</components>
+	<connections>	
+		<eoc submodel="Locations" out_port_submodel="LOC_outLoads" out_port_coupled="outLoads" />		
+		<eoc submodel="Locations" out_port_submodel="LOC_outPallets" out_port_coupled="outPallets" />		
+		<ic from_submodel="Locations" out_port_from="LOC_outLoads" to_submodel="Aircraft" in_port_to="AC_inLoads" />    
+		<ic from_submodel="Aircraft" out_port_from="AC_outStatus" to_submodel="Locations" in_port_to="LOC_InputACStatus" />    
+		<ic from_submodel="Aircraft" out_port_from="AC_outLoads" to_submodel="Locations" in_port_to="LOC_InputLoads" />    
+		<ic from_submodel="irPalletIn" out_port_from="iestream_input_defs&lt;oPallet&gt;::out" to_submodel="Locations" in_port_to="LOC_InputPallets" />    
+		<ic from_submodel="irLocInfoIn" out_port_from="iestream_input_defs&lt;oLocInfo&gt;::out" to_submodel="Locations" in_port_to="LOC_InputLocInfo" />    
+	</connections>
+</coupledModel>

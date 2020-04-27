@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configModel name="Cadmium">
+	<headers>
+		<header>&lt;boost/algorithm/string.hpp&gt;</header>
+		<header>&quot;../../../messages/StratAirLiftSimMessage.hpp&quot;</header>
+		<header>&quot;EIRational.hpp&quot;</header>			
+	</headers>
+	<objects>
+		<object>StratAirLiftSimMessage</object>
+		<object>StratAirliftUtils</object>
+	</objects>
+	<time>
+		<timetype>EIRational</timetype>
+		<rununtil>-1</rununtil>
+	</time>
+	<loggers>
+		<loggerfile name="stratairliftstates" />
+		<loggerfile name="stratairliftmessages" />
+		<logger name="state" type="logger::logger_state" format="dynamic::logger::formatter&lt;TIME&gt;" loggerfile="stratairliftstates" />
+		<logger name="messages" type="logger::logger_messages" format="dynamic::logger::formatter&lt;TIME&gt;" loggerfile="stratairliftmessages" />
+	</loggers>
+</configModel>

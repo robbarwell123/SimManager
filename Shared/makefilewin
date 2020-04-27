@@ -1,0 +1,21 @@
+CC=g++
+CFLAGS=-std=c++17
+
+INCLUDECADMIUM=-I /cygdrive/c/SimManager/Simulators/Cadmium/cadmium/cadmium/include
+INCLUDEDESTIMES=-I /cygdrive/c/SimManager/Simulators/Cadmium/DESTimes/include
+
+#TARGET TO COMPILE ALL THE TESTS TOGETHER (NOT SIMULATOR)
+# === COMMON ===
+common: StratAirLiftSimMessage.o StratAirliftUtils.o message.o
+StratAirLiftSimMessage.o: messages/StratAirLiftSimMessage.cpp
+	$(CC) -g -c $(CFLAGS) $(INCLUDECADMIUM) $(INCLUDEDESTIMES) messages/StratAirLiftSimMessage.cpp -o includes/win/StratAirLiftSimMessage.o
+
+StratAirliftUtils.o: usrlib/StratAirliftUtils.cpp
+	$(CC) -g -c $(CFLAGS) $(INCLUDECADMIUM) $(INCLUDEDESTIMES) usrlib/StratAirliftUtils.cpp -o includes/win/StratAirliftUtils.o
+
+message.o: messages/message.cpp
+	$(CC) -g -c $(CFLAGS) $(INCLUDECADMIUM) $(INCLUDEDESTIMES) messages/message.cpp -o includes/win/message.o
+
+#CLEAN COMMANDS
+clean: 
+	rm -f includes/win/*

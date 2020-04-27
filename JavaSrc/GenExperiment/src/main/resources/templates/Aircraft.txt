@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coupledModel name="Aircraft">
+	<ports>
+		<port type="in" name="AC_inLoads" message_type="oLoad"></port>
+		<port type="out" name="AC_outLoads" message_type="oLoad"></port>
+ 		<port type="out" name="AC_outStatus" message_type="oAircraftStatus"></port>
+	</ports>
+	<components>
+[# th:each="curr_plane, stats : ${planes}"]		<submodel type="atomic" name="Aircraft[(${curr_plane.getId()})]" class_name="Aircraft" xml_implementation="Aircraft.devs">
+			<param type="int" name="iAircraftID" value="[(${curr_plane.getId()})]" />
+			<param type="int" name="iType" value="[(${curr_plane.getType()})]" />
+			<param type="int" name="iHomeLocation" value="[(${curr_plane.getHome()})]" />
+	[# th:switch="${curr_plane.getType()}"][# th:case="1"]		<param type="int" name="iAvgSpeed" value="490" />
+			<param type="int" name="iMaxLoad" value="16" />			
+		[/][# th:case="2"]		<param type="int" name="iAvgSpeed" value="300" />
+			<param type="int" name="iMaxLoad" value="4" />			
+		[/]
+	[/]</submodel>
+[/]
+	</components>
+	<connections>
+[# th:each="curr_plane, stats : ${planes}"]		<eic in_port_coupled="AC_inLoads" submodel="Aircraft[(${curr_plane.getId()})]" in_port_submodel="Aircraft_defs::inLoads" />
+[/]
+[# th:each="curr_plane, stats : ${planes}"]		<eoc submodel="Aircraft[(${curr_plane.getId()})]" out_port_submodel="Aircraft_defs::outLoads" out_port_coupled="AC_outLoads" />		
+		<eoc submodel="Aircraft[(${curr_plane.getId()})]" out_port_submodel="Aircraft_defs::outACStatus" out_port_coupled="AC_outStatus" />		
+[/]
+	</connections>
+</coupledModel>

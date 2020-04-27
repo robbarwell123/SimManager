@@ -1,0 +1,7 @@
+FROM mysql
+MAINTAINER Rob Barwell <robbarwell@cmail.carleton.ca>
+COPY ./* /docker-entrypoint-initdb.d/
+ENV MYSQL_ROOT_PASSWORD=root
+ENV MYSQL_DATABASE=sims
+ENV MYSQL_USER=sims
+ENV MYSQL_PASSWORD=sims

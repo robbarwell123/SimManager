@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Models>
+	<Model name="Aircraft" type="atomic" description="Models a Transport Aircraft">
+		<Inputs>
+			<Port name="inLoads" type="oLoad" description="Aircraft Load" />
+		</Inputs>
+		<Outputs>
+			<Port name="outLoads" type="oLoad" description="Aircraft Load" />
+			<Port name="outACStatus" type="oAircraftStatus" description="Aircraft Status" />
+		</Outputs>
+		<Files>
+			<File name="Aircraft.hpp" type="HPP" location="atomics" />
+		</Files>
+	</Model>
+	<Model name="Location" type="atomic" description="Models a Logistics Hub">
+		<Inputs>
+			<Port name="inLoads" type="oLoad" description="Aircraft Load" />
+			<Port name="inPallets" type="oPallet" description="Pallets to transport" />
+			<Port name="inACStatus" type="oAircraftStatus" description="Aircraft Status" />
+			<Port name="inLocInfo" type="oLocInfo" description="Information about location connections" />
+		</Inputs>
+		<Outputs>
+			<Port name="outLoads" type="oLoad" description="Aircraft Load" />
+			<Port name="outPallets" type="oPallet" description="Pallets for delivery to final person" />
+		</Outputs>
+		<Files>
+			<File name="Location.hpp" type="HPP" location="atomics" />
+		</Files>
+	</Model>
+</Models>

@@ -1,0 +1,5 @@
+FROM openjdk:8-jdk-alpine
+MAINTAINER Rob Barwell <robbarwell@cmail.carleton.ca>
+COPY ViewExperiment-1.0.jar /microservice/ViewExperiment-1.0.jar
+RUN mkdir /microservice/config
+ENTRYPOINT ["java","-Dspring.config.location=/microservice/config/application.properties","-jar","/microservice/ViewExperiment-1.0.jar"]

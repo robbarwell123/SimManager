@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configModel name="Cadmium">
+	<headers>
+		<header>&lt;chrono&gt;</header>
+		<header>&lt;algorithm&gt;</header>
+		<header>&quot;../../messages/message.hpp&quot;</header>
+	</headers>
+	<objects>
+		<object>message</object>
+	</objects>
+	<time>
+		<timetype>NDTime</timetype>
+		<rununtil>-1</rununtil>
+	</time>
+	<loggers>
+		<loggerfile name="messages" />
+		<loggerfile name="states" />
+		<logger name="state" type="logger::logger_state" format="dynamic::logger::formatter&lt;TIME&gt;" loggerfile="states" />
+		<logger name="global_time_sta" type="logger::logger_global_time" format="dynamic::logger::formatter&lt;TIME&gt;" loggerfile="states" />
+		<logger name="global_time_mes" type="logger::logger_global_time" format="dynamic::logger::formatter&lt;TIME&gt;" loggerfile="messages" />
+		<logger name="log_messages" type="logger::logger_messages" format="dynamic::logger::formatter&lt;TIME&gt;" loggerfile="messages" />
+	</loggers>
+</configModel>
