@@ -53,7 +53,7 @@ public class RunCadmium
 		try
 		{
 			RunSim(base_dir);
-			toRtn.setData("Sim Executed Successfully.");
+			toRtn.setData("Sim Executed Successfully: "+base_dir);
 		}catch(Exception errConvert)
 		{
 			bStatus=false;
@@ -70,7 +70,6 @@ public class RunCadmium
 		
 		try
 		{
-logger.info(sRunCommand+" "+base_dir.replaceAll(":", ""));
 			Process myRun = Runtime.getRuntime().exec(sRunCommand+" "+base_dir.replaceAll(":", ""));
 			if(!myRun.waitFor(iMaxTimeout,TimeUnit.SECONDS))
 			{
